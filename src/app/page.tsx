@@ -1,14 +1,12 @@
+import { Logo } from "@/components/ui/Logo";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#F7FAF9] text-[#18322D]">
       <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 sm:px-8 lg:px-12">
         <header className="flex items-center justify-between py-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#DCEFE9]">
-              <span className="text-lg font-semibold text-[#2F7D6D]">
-                L
-              </span>
-            </div>
+            <Logo size="md" />
 
             <span className="text-xl font-semibold tracking-tight">
               Lumy
@@ -25,10 +23,8 @@ export default function Home() {
 
         <section className="flex flex-1 items-center justify-center py-16">
           <div className="w-full max-w-3xl text-center">
-            <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-[28px] bg-[#DCEFE9] shadow-sm">
-              <span className="text-3xl font-semibold text-[#2F7D6D]">
-                L
-              </span>
+            <div className="mx-auto mb-8">
+              <Logo size="lg" />
             </div>
 
             <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-[#5D8A80]">
