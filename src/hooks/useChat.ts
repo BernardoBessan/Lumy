@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { generateAssistantResponse } from "@/lib/chat/chatService";
 
 type Message = {
   id: number;
@@ -28,21 +29,22 @@ export function useChat() {
 
     setIsLoading(true);
 
-    setTimeout(() => {
-      const assistantMessage: Message = {
-        id: Date.now() + 1,
-        role: "assistant",
-        content:
-          "Entendo. Quer me contar um pouco mais sobre o que aconteceu?",
-      };
+    generateAssistantResponse(content)
+      .then((assistantContent) => {
+        const assistantMessage: Message = {
+          id: Date.now() + 1,
+          role: "assistant",
+          content: assistantContent,
+        };
 
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        assistantMessage,
-      ]);
-
-      setIsLoading(false);
-    }, 1200);
+        setMessages((currentMessages) => [
+          ...currentMessages,
+          assistantMessage,
+        ]);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   return {
