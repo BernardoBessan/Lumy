@@ -40,7 +40,10 @@ export default function ChatPage() {
 
             <ChatTypingIndicator visible={isLoading} />
 
-            <ChatInput onSend={sendMessage} />
+            <ChatInput
+                onSend={sendMessage}
+                disabled={isLoading}
+            />
           </div>
         </section>
       </div>
