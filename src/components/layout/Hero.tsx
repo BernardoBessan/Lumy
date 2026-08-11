@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
 
 export function Hero() {
@@ -23,12 +24,12 @@ export function Hero() {
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <button
-            type="button"
-            className="w-full rounded-full bg-[#3F8F7D] px-7 py-3.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#347A6B] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#3F8F7D] focus:ring-offset-2 sm:w-auto"
-          >
+          <Link
+            href="/chat"
+            className="w-full rounded-full bg-[#3F8F7D] px-7 py-3.5 text-center text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#347A6B] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#3F8F7D] focus:ring-offset-2 sm:w-auto"
+            >
             Começar agora
-          </button>
+        </Link>
 
           <button
             type="button"
