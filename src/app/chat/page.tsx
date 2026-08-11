@@ -24,6 +24,20 @@ export default function ChatPage() {
     };
 
     setMessages((currentMessages) => [...currentMessages, newMessage]);
+
+    setTimeout(() => {
+      const assistantMessage: Message = {
+        id: Date.now() + 1,
+        role: "assistant",
+        content:
+          "Entendo. Quer me contar um pouco mais sobre o que aconteceu?",
+      };
+
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        assistantMessage,
+      ]);
+    }, 700);
   }
 
   return (
