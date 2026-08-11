@@ -1,44 +1,14 @@
 "use client";
 
-import { useState } from "react";
-
+import { ChatTypingIndicator } from "@/components/chat/ChatTypingIndicator";
 import { ChatEmptyState } from "@/components/chat/ChatEmptyState";
 import { ChatHeader } from "@/components/chat/ChatHeader";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { ChatMessages } from "@/components/chat/ChatMessages";
-
-type Message = {
-  id: number;
-  role: "user" | "assistant";
-  content: string;
-};
+import { useChat } from "@/hooks/useChat";
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState<Message[]>([]);
-
-  function handleSendMessage(content: string) {
-    const newMessage: Message = {
-      id: Date.now(),
-      role: "user",
-      content,
-    };
-
-    setMessages((currentMessages) => [...currentMessages, newMessage]);
-
-    setTimeout(() => {
-      const assistantMessage: Message = {
-        id: Date.now() + 1,
-        role: "assistant",
-        content:
-          "Entendo. Quer me contar um pouco mais sobre o que aconteceu?",
-      };
-
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        assistantMessage,
-      ]);
-    }, 700);
-  }
+  const { messages, isLoading, sendMessage } = useChat();
 
   return (
     <main className="min-h-screen bg-[#F7FAF9] text-[#18322D]">
@@ -63,12 +33,14 @@ export default function ChatPage() {
 
           <div className="flex flex-1 flex-col overflow-hidden rounded-3xl border border-[#DCEAE5] bg-white shadow-sm">
             {messages.length === 0 ? (
-              <ChatEmptyState />
-            ) : (
-              <ChatMessages messages={messages} />
-            )}
+            <ChatEmptyState />
+                ) : (
+                <ChatMessages messages={messages} />
+                )}
 
-            <ChatInput onSend={handleSendMessage} />
+            <ChatTypingIndicator visible={isLoading} />
+
+            <ChatInput onSend={sendMessage} />
           </div>
         </section>
       </div>
