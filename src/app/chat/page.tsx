@@ -1,8 +1,31 @@
-import { ChatHeader } from "@/components/chat/ChatHeader";
+"use client";
+
+import { useState } from "react";
+
 import { ChatEmptyState } from "@/components/chat/ChatEmptyState";
+import { ChatHeader } from "@/components/chat/ChatHeader";
 import { ChatInput } from "@/components/chat/ChatInput";
+import { ChatMessages } from "@/components/chat/ChatMessages";
+
+type Message = {
+  id: number;
+  role: "user" | "assistant";
+  content: string;
+};
 
 export default function ChatPage() {
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  function handleSendMessage(content: string) {
+    const newMessage: Message = {
+      id: Date.now(),
+      role: "user",
+      content,
+    };
+
+    setMessages((currentMessages) => [...currentMessages, newMessage]);
+  }
+
   return (
     <main className="min-h-screen bg-[#F7FAF9] text-[#18322D]">
       <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 sm:px-8">
@@ -24,9 +47,14 @@ export default function ChatPage() {
             </p>
           </div>
 
-          <div className="flex flex-1 flex-col rounded-3xl border border-[#DCEAE5] bg-white shadow-sm">
-            <ChatEmptyState />
-            <ChatInput />
+          <div className="flex flex-1 flex-col overflow-hidden rounded-3xl border border-[#DCEAE5] bg-white shadow-sm">
+            {messages.length === 0 ? (
+              <ChatEmptyState />
+            ) : (
+              <ChatMessages messages={messages} />
+            )}
+
+            <ChatInput onSend={handleSendMessage} />
           </div>
         </section>
       </div>
