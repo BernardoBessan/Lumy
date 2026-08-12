@@ -46,6 +46,20 @@ export function useChat() {
         ...currentMessages,
         assistantMessage,
       ]);
+    } catch (error) {
+      console.error("Erro ao obter resposta da Lumy:", error);
+
+      const errorMessage: Message = {
+        id: Date.now() + 1,
+        role: "assistant",
+        content:
+          "Tive um problema para responder agora. Podemos tentar novamente?",
+      };
+
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        errorMessage,
+      ]);
     } finally {
       setIsLoading(false);
     }
