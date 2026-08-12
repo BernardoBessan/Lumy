@@ -1,7 +1,17 @@
-export async function generateAssistantResponse(
-  message: string,
-): Promise<string> {
-  await new Promise((resolve) => setTimeout(resolve, 1200));
+export async function generateAssistantResponse(message: string) {
+  const response = await fetch("/api/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ message }),
+  });
 
-  return "Entendo. Quer me contar um pouco mais sobre o que aconteceu?";
+  if (!response.ok) {
+    throw new Error("Não foi possível obter uma resposta da Lumy.");
+  }
+
+  const data = await response.json();
+
+  return data.message;
 }
