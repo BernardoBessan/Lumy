@@ -28,38 +28,54 @@ export function useChat() {
     setMessages(updatedMessages);
     setIsLoading(true);
 
+    const assistantMessageId = Date.now() + 1;
+
     try {
-      const assistantContent = await generateAssistantResponse(
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        {
+          id: assistantMessageId,
+          role: "assistant",
+          content: "",
+        },
+      ]);
+
+      let assistantContent = "";
+
+      await generateAssistantResponse(
         updatedMessages.map(({ role, content }) => ({
           role,
           content,
         })),
+        (chunk) => {
+          assistantContent += chunk;
+
+          setMessages((currentMessages) =>
+            currentMessages.map((message) =>
+              message.id === assistantMessageId
+                ? {
+                    ...message,
+                    content: assistantContent,
+                  }
+                : message,
+            ),
+          );
+        },
       );
-
-      const assistantMessage: Message = {
-        id: Date.now() + 1,
-        role: "assistant",
-        content: assistantContent,
-      };
-
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        assistantMessage,
-      ]);
     } catch (error) {
       console.error("Erro ao obter resposta da Lumy:", error);
 
-      const errorMessage: Message = {
-        id: Date.now() + 1,
-        role: "assistant",
-        content:
-          "Tive um problema para responder agora. Podemos tentar novamente?",
-      };
-
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        errorMessage,
-      ]);
+      setMessages((currentMessages) =>
+        currentMessages.map((message) =>
+          message.id === assistantMessageId
+            ? {
+                ...message,
+                content:
+                  "Tive um problema para responder agora. Podemos tentar novamente?",
+              }
+            : message,
+        ),
+      );
     } finally {
       setIsLoading(false);
     }

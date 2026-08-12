@@ -5,7 +5,8 @@ type Message = {
 
 export async function generateAssistantResponse(
   messages: Message[],
-): Promise<string> {
+  onChunk: (chunk: string) => void,
+): Promise<void> {
   const response = await fetch("/api/chat", {
     method: "POST",
     headers: {
@@ -18,7 +19,36 @@ export async function generateAssistantResponse(
     throw new Error("Não foi possível obter uma resposta da Lumy.");
   }
 
-  const data = await response.json();
+  if (!response.body) {
+    throw new Error("A resposta da Lumy não possui conteúdo.");
+  }
 
-  return data.message;
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) {
+        break;
+      }
+
+      const chunk = decoder.decode(value, {
+        stream: true,
+      });
+
+      if (chunk) {
+        onChunk(chunk);
+      }
+    }
+
+    const remainingText = decoder.decode();
+
+    if (remainingText) {
+      onChunk(remainingText);
+    }
+  } finally {
+    reader.releaseLock();
+  }
 }

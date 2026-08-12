@@ -23,7 +23,7 @@ export async function POST(request: Request) {
       parts: [{ text: message.content }],
     }));
 
-    const response = await ai.models.generateContent({
+    const stream = await ai.models.generateContentStream({
       model: "gemini-3.6-flash",
       contents,
       config: {
@@ -31,8 +31,32 @@ export async function POST(request: Request) {
       },
     });
 
-    return Response.json({
-      message: response.text,
+    const encoder = new TextEncoder();
+
+    const readableStream = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of stream) {
+            const text = chunk.text;
+
+            if (text) {
+              controller.enqueue(encoder.encode(text));
+            }
+          }
+
+          controller.close();
+        } catch (error) {
+          console.error("Erro durante o streaming da Lumy:", error);
+          controller.error(error);
+        }
+      },
+    });
+
+    return new Response(readableStream, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache",
+      },
     });
   } catch (error) {
     console.error("Erro ao gerar resposta:", error);
