@@ -1,6 +1,5 @@
 "use client";
 
-import { ChatTypingIndicator } from "@/components/chat/ChatTypingIndicator";
 import { ChatEmptyState } from "@/components/chat/ChatEmptyState";
 import { ChatHeader } from "@/components/chat/ChatHeader";
 import { ChatInput } from "@/components/chat/ChatInput";
@@ -33,16 +32,17 @@ export default function ChatPage() {
 
           <div className="flex flex-1 flex-col overflow-hidden rounded-3xl border border-[#DCEAE5] bg-white shadow-sm">
             {messages.length === 0 ? (
-            <ChatEmptyState />
-                ) : (
-                <ChatMessages messages={messages} />
-                )}
-
-            <ChatTypingIndicator visible={isLoading} />
+              <ChatEmptyState />
+            ) : (
+              <ChatMessages
+                messages={messages}
+                isLoading={isLoading}
+              />
+            )}
 
             <ChatInput
-                onSend={sendMessage}
-                disabled={isLoading}
+              onSend={sendMessage}
+              disabled={isLoading}
             />
           </div>
         </section>
