@@ -33,27 +33,29 @@ export function ChatMessages({
 
   return (
     <div className="flex flex-1 flex-col overflow-y-auto">
-      <div className="flex flex-col gap-4 p-4 sm:p-6">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${
-              message.role === "user"
-                ? "justify-end"
-                : "justify-start"
-            }`}
-          >
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8">
+        {messages.map((message) => {
+          const isUser = message.role === "user";
+
+          return (
             <div
-              className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-6 sm:max-w-[70%] ${
-                message.role === "user"
-                  ? "rounded-br-md bg-[#3F8F7D] text-white"
-                  : "rounded-bl-md border border-[#DCEAE5] bg-[#F7FAF9] text-[#49635D]"
+              key={message.id}
+              className={`flex ${
+                isUser ? "justify-end" : "justify-start"
               }`}
             >
-              {message.content}
+              <div
+                className={
+                  isUser
+                    ? "max-w-[85%] rounded-2xl rounded-br-md bg-[#3F8F7D] px-4 py-3 text-sm leading-6 text-white shadow-sm sm:max-w-[70%]"
+                    : "max-w-[85%] px-1 py-1 text-sm leading-7 text-[#49635D] sm:max-w-[75%] sm:text-[15px]"
+                }
+              >
+                {message.content}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         <ChatTypingIndicator visible={isLoading} />
 
