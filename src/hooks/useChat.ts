@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import { generateAssistantResponse } from "@/lib/chat/chatService";
 
 type Message = {
@@ -11,7 +12,7 @@ export function useChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  function sendMessage(content: string) {
+  async function sendMessage(content: string) {
     if (isLoading) {
       return;
     }
@@ -22,29 +23,32 @@ export function useChat() {
       content,
     };
 
-    setMessages((currentMessages) => [
-      ...currentMessages,
-      newMessage,
-    ]);
+    const updatedMessages = [...messages, newMessage];
 
+    setMessages(updatedMessages);
     setIsLoading(true);
 
-    generateAssistantResponse(content)
-      .then((assistantContent) => {
-        const assistantMessage: Message = {
-          id: Date.now() + 1,
-          role: "assistant",
-          content: assistantContent,
-        };
+    try {
+      const assistantContent = await generateAssistantResponse(
+        updatedMessages.map(({ role, content }) => ({
+          role,
+          content,
+        })),
+      );
 
-        setMessages((currentMessages) => [
-          ...currentMessages,
-          assistantMessage,
-        ]);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      const assistantMessage: Message = {
+        id: Date.now() + 1,
+        role: "assistant",
+        content: assistantContent,
+      };
+
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        assistantMessage,
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return {

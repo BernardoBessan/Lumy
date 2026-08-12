@@ -1,10 +1,17 @@
-export async function generateAssistantResponse(message: string) {
+type Message = {
+  role: "user" | "assistant";
+  content: string;
+};
+
+export async function generateAssistantResponse(
+  messages: Message[],
+): Promise<string> {
   const response = await fetch("/api/chat", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ message }),
+    body: JSON.stringify({ messages }),
   });
 
   if (!response.ok) {
