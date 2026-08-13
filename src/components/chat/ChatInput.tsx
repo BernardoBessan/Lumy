@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type ChatInputProps = {
   onSend: (content: string) => void;
@@ -12,8 +12,20 @@ export function ChatInput({
   disabled = false,
 }: ChatInputProps) {
   const [value, setValue] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const canSend = value.trim().length > 0 && !disabled;
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+
+    if (!textarea) {
+      return;
+    }
+
+    textarea.style.height = "auto";
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 128)}px`;
+  }, [value]);
 
   function handleSubmit() {
     if (!canSend) {
@@ -22,6 +34,10 @@ export function ChatInput({
 
     onSend(value.trim());
     setValue("");
+
+    requestAnimationFrame(() => {
+      textareaRef.current?.focus();
+    });
   }
 
   function handleKeyDown(
@@ -38,13 +54,14 @@ export function ChatInput({
       <div className="mx-auto w-full max-w-3xl">
         <div className="flex items-end gap-2 rounded-2xl border border-[#D5E4DF] bg-[#F9FCFB] p-2 transition-all focus-within:border-[#3F8F7D] focus-within:bg-white focus-within:ring-4 focus-within:ring-[#3F8F7D]/10">
           <textarea
+            ref={textareaRef}
             value={value}
             onChange={(event) => setValue(event.target.value)}
             onKeyDown={handleKeyDown}
             disabled={disabled}
             rows={1}
             placeholder="Escreva como você está se sentindo..."
-            className="max-h-32 min-h-10 min-w-0 flex-1 resize-none bg-transparent px-3 py-2 text-sm leading-6 text-[#18322D] outline-none placeholder:text-[#94A5A0] disabled:cursor-not-allowed disabled:opacity-60"
+            className="max-h-32 min-h-10 min-w-0 flex-1 resize-none overflow-y-auto bg-transparent px-3 py-2 text-sm leading-6 text-[#18322D] outline-none placeholder:text-[#94A5A0] disabled:cursor-not-allowed disabled:opacity-60"
           />
 
           <button

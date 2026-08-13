@@ -1,6 +1,22 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 import { Logo } from "@/components/ui/Logo";
+import { logout } from "@/lib/firebase/auth";
 
 export function ChatHeader() {
+  const router = useRouter();
+
+  async function handleLogout() {
+    try {
+      await logout();
+      router.push("/login");
+    } catch (error) {
+      console.error("Erro ao sair:", error);
+    }
+  }
+
   return (
     <header className="flex items-center justify-between py-5 sm:py-6">
       <div className="flex items-center gap-3">
@@ -19,6 +35,7 @@ export function ChatHeader() {
 
       <button
         type="button"
+        onClick={handleLogout}
         className="rounded-full px-4 py-2 text-sm font-medium text-[#60736E] transition-colors hover:bg-[#EAF3F0] hover:text-[#18322D]"
       >
         Sair

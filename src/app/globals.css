@@ -46,3 +46,55 @@ button {
     opacity: 1;
   }
 }
+
+@keyframes lumy-thinking {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.88);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes lumy-draw {
+  0% {
+    transform: translate(-120px, 120px) scale(0.2);
+  }
+
+  45% {
+    transform: translate(90px, -20px) scale(1.2);
+  }
+
+  55% {
+    transform: translate(90px, -20px) scale(1.2);
+  }
+
+  100% {
+    transform: translate(330px, -140px) scale(0.2);
+  }
+}
+@keyframes lumy-ribbon {
+  0% {
+    stroke-dasharray: 0 1;
+    stroke-dashoffset: 0;
+  }
+
+  45% {
+    stroke-dasharray: 1 0;
+    stroke-dashoffset: 0;
+  }
+
+  55% {
+    stroke-dasharray: 1 0;
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dasharray: 0 1;
+    stroke-dashoffset: 0;
+  }
+}
