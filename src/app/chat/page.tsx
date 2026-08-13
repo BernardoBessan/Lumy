@@ -21,8 +21,9 @@ export default function ChatPage() {
   const {
     messages,
     isLoading,
-    conversations,
+    isLoadingHistory,
     conversationId,
+    conversations,
     sendMessage,
     selectConversation,
     newConversation,
@@ -53,51 +54,50 @@ export default function ChatPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F7FAF9] text-[#18322D]">
-      <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 sm:px-8">
-        <ChatHeader />
+    <main className="h-screen overflow-hidden bg-[#F7FAF9] text-[#18322D]">
+      <div className="flex h-full w-full">
+        {/* Sidebar */}
+        <div className="hidden h-full w-64 shrink-0 border-r border-[#DCEAE5] bg-white sm:flex sm:flex-col">
+          <ChatHistory
+            conversations={conversations}
+            activeConversationId={conversationId}
+            onSelect={(selectedConversationId) =>
+              selectConversation(user.uid, selectedConversationId)
+            }
+            onNewConversation={newConversation}
+          />
+        </div>
 
-        <section className="flex flex-1 flex-col py-8">
-          <div className="mb-8">
-            <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#5D8A80]">
-              Seu espaço de conversa
-            </p>
-
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[#18322D] sm:text-4xl">
-              Converse com a Lumy
-            </h1>
-
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-[#60736E] sm:text-base">
-              Você pode começar contando como está se sentindo ou o que está
-              passando pela sua cabeça.
-            </p>
+        {/* Área principal */}
+        <div className="flex min-w-0 flex-1 flex-col">
+          <div className="shrink-0 border-b border-[#E5EEEB] px-4 sm:px-6">
+            <ChatHeader />
           </div>
 
-          <div className="flex flex-1 flex-col overflow-hidden rounded-3xl border border-[#DCEAE5] bg-white shadow-sm">
-            <ChatHistory
-              conversations={conversations}
-              activeConversationId={conversationId}
-              onSelect={(selectedConversationId) =>
-                selectConversation(user.uid, selectedConversationId)
-              }
-              onNewConversation={newConversation}
-            />
+          <section className="flex min-h-0 flex-1 flex-col">
+            <div className="flex min-h-0 flex-1 flex-col">
+              {isLoadingHistory ? (
+                <div className="flex flex-1 items-center justify-center">
+                  <p className="text-sm text-[#83948F]">
+                    Carregando conversa...
+                  </p>
+                </div>
+              ) : messages.length === 0 ? (
+                <ChatEmptyState />
+              ) : (
+                <ChatMessages
+                  messages={messages}
+                  isLoading={isLoading}
+                />
+              )}
 
-            {messages.length === 0 ? (
-              <ChatEmptyState />
-            ) : (
-              <ChatMessages
-                messages={messages}
-                isLoading={isLoading}
+              <ChatInput
+                onSend={sendMessage}
+                disabled={isLoading || isLoadingHistory}
               />
-            )}
-
-            <ChatInput
-              onSend={sendMessage}
-              disabled={isLoading}
-            />
-          </div>
-        </section>
+            </div>
+          </section>
+        </div>
       </div>
     </main>
   );

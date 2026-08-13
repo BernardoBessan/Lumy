@@ -250,7 +250,7 @@ function generateConversationTitle(content: string) {
 
   const titleRules = [
     {
-      keywords: ["faculdade", "faculdade", "prova", "provas", "estudo", "estudar"],
+      keywords: ["faculdade", "prova", "provas", "estudo", "estudar"],
       title: "Estudos e faculdade",
     },
     {

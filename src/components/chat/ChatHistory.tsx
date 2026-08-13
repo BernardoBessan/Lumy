@@ -16,55 +16,53 @@ export function ChatHistory({
   onNewConversation,
 }: ChatHistoryProps) {
   return (
-    <aside className="w-full border-b border-[#DCEAE5] bg-white px-4 py-4 sm:px-5">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <p className="text-sm font-semibold text-[#18322D]">
-            Suas conversas
-          </p>
-
-          <p className="mt-0.5 text-xs text-[#83948F]">
-            Continue de onde parou
-          </p>
-        </div>
-
+    <aside className="flex h-full w-full flex-col bg-white">
+      <div className="p-4">
         <button
           type="button"
           onClick={onNewConversation}
-          className="rounded-full bg-[#3F8F7D] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#347A6B]"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#3F8F7D] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#347A6B]"
         >
+          <span className="text-lg leading-none">+</span>
           Nova conversa
         </button>
       </div>
 
-      {conversations.length > 0 && (
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
-          {conversations.map((conversation) => {
-            const isActive = conversation.id === activeConversationId;
+      <div className="px-4 pb-2">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#83948F]">
+          Conversas
+        </p>
+      </div>
+
+      <div className="flex gap-2 overflow-x-auto px-4 pb-4 sm:flex-1 sm:flex-col sm:overflow-x-visible sm:overflow-y-auto">
+        {conversations.length === 0 ? (
+          <p className="py-3 text-xs leading-5 text-[#98A7A3]">
+            Suas conversas aparecerão aqui.
+          </p>
+        ) : (
+          conversations.map((conversation) => {
+            const isActive =
+              conversation.id === activeConversationId;
 
             return (
               <button
                 key={conversation.id}
                 type="button"
                 onClick={() => onSelect(conversation.id)}
-                className={`min-w-48 rounded-2xl border px-4 py-3 text-left transition-colors ${
+                className={`min-w-48 rounded-xl px-3 py-2.5 text-left transition-colors sm:min-w-0 ${
                   isActive
-                    ? "border-[#BBDDD3] bg-[#EDF7F4]"
-                    : "border-[#E2ECE8] bg-white hover:bg-[#F7FAF9]"
+                    ? "bg-[#EDF7F4] text-[#285D53]"
+                    : "text-[#60736E] hover:bg-[#F7FAF9] hover:text-[#285D53]"
                 }`}
               >
-                <p
-                  className={`truncate text-sm font-medium ${
-                    isActive ? "text-[#285D53]" : "text-[#49635D]"
-                  }`}
-                >
+                <p className="truncate text-sm font-medium">
                   {conversation.title}
                 </p>
               </button>
             );
-          })}
-        </div>
-      )}
+          })
+        )}
+      </div>
     </aside>
   );
 }
