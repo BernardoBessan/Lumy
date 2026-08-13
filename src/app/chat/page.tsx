@@ -17,6 +17,7 @@ export default function ChatPage() {
 
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const {
     messages,
@@ -57,7 +58,7 @@ export default function ChatPage() {
   return (
     <main className="h-screen overflow-hidden bg-[#F7FAF9] text-[#18322D]">
       <div className="flex h-full w-full">
-        {/* Sidebar */}
+        {/* Sidebar desktop */}
         <div className="hidden h-full w-64 shrink-0 border-r border-[#DCEAE5] bg-white sm:flex sm:flex-col">
           <ChatHistory
             conversations={conversations}
@@ -67,15 +68,54 @@ export default function ChatPage() {
             }
             onNewConversation={newConversation}
             onDelete={(selectedConversationId) =>
-            deleteConversation(user.uid, selectedConversationId)
+              deleteConversation(user.uid, selectedConversationId)
             }
           />
         </div>
 
+        {/* Sidebar mobile */}
+        {isSidebarOpen && (
+          <div className="fixed inset-0 z-50 sm:hidden">
+            <button
+              type="button"
+              aria-label="Fechar conversas"
+              onClick={() => setIsSidebarOpen(false)}
+              className="absolute inset-0 bg-black/20"
+            />
+
+            <div className="relative h-full w-72 max-w-[85vw] bg-white shadow-xl">
+              <ChatHistory
+                conversations={conversations}
+                activeConversationId={conversationId}
+                onSelect={(selectedConversationId) => {
+                  selectConversation(
+                    user.uid,
+                    selectedConversationId,
+                  );
+                  setIsSidebarOpen(false);
+                }}
+                onNewConversation={() => {
+                  newConversation();
+                  setIsSidebarOpen(false);
+                }}
+                onDelete={(selectedConversationId) =>
+                  deleteConversation(
+                    user.uid,
+                    selectedConversationId,
+                  )
+                }
+                onClose={() => setIsSidebarOpen(false)}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Área principal */}
         <div className="flex min-w-0 flex-1 flex-col">
           <div className="shrink-0 border-b border-[#E5EEEB] px-4 sm:px-6">
-            <ChatHeader />
+            <ChatHeader
+              onOpenSidebar={() => setIsSidebarOpen(true)}
+            />
           </div>
 
           <section className="flex min-h-0 flex-1 flex-col">
@@ -105,5 +145,4 @@ export default function ChatPage() {
       </div>
     </main>
   );
-  
 }
