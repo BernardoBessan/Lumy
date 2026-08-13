@@ -7,6 +7,7 @@ type ChatHistoryProps = {
   activeConversationId: string | null;
   onSelect: (conversationId: string) => void;
   onNewConversation: () => void;
+  onDelete: (conversationId: string) => void;
 };
 
 export function ChatHistory({
@@ -14,7 +15,25 @@ export function ChatHistory({
   activeConversationId,
   onSelect,
   onNewConversation,
+  onDelete,
 }: ChatHistoryProps) {
+  function handleDelete(
+    event: React.MouseEvent,
+    conversationId: string,
+  ) {
+    event.stopPropagation();
+
+    const confirmed = window.confirm(
+      "Tem certeza que deseja excluir esta conversa?",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    onDelete(conversationId);
+  }
+
   return (
     <aside className="flex h-full w-full flex-col bg-white">
       <div className="p-4">
@@ -45,20 +64,37 @@ export function ChatHistory({
               conversation.id === activeConversationId;
 
             return (
-              <button
+              <div
                 key={conversation.id}
-                type="button"
-                onClick={() => onSelect(conversation.id)}
-                className={`min-w-48 rounded-xl px-3 py-2.5 text-left transition-colors sm:min-w-0 ${
+                className={`group flex min-w-48 items-center rounded-xl transition-colors sm:min-w-0 ${
                   isActive
                     ? "bg-[#EDF7F4] text-[#285D53]"
                     : "text-[#60736E] hover:bg-[#F7FAF9] hover:text-[#285D53]"
                 }`}
               >
-                <p className="truncate text-sm font-medium">
-                  {conversation.title}
-                </p>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => onSelect(conversation.id)}
+                  className="min-w-0 flex-1 px-3 py-2.5 text-left"
+                >
+                  <p className="truncate text-sm font-medium">
+                    {conversation.title}
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={(event) =>
+                    handleDelete(event, conversation.id)
+                  }
+                  aria-label={`Excluir conversa ${conversation.title}`}
+                  className="mr-1 hidden h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#98A7A3] transition-colors hover:bg-[#EAF3F0] hover:text-[#C05A5A] group-hover:flex"
+                >
+                  <span className="text-base leading-none">
+                    ×
+                  </span>
+                </button>
+              </div>
             );
           })
         )}

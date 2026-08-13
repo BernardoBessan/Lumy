@@ -5,6 +5,7 @@ import { observeAuthState } from "@/lib/firebase/auth";
 import { auth } from "@/lib/firebase/firebase";
 import {
   createConversation,
+  deleteConversation as deleteConversationFromFirestore,
   loadConversations,
   loadLatestConversation,
   loadMessages,
@@ -74,6 +75,37 @@ export function useChat() {
 
     setConversationId(null);
     setMessages([]);
+  }
+
+  async function deleteConversation(
+    uid: string,
+    selectedConversationId: string,
+  ) {
+    if (isLoading) {
+      return;
+    }
+
+    try {
+      await deleteConversationFromFirestore(
+        uid,
+        selectedConversationId,
+      );
+
+      setConversations((currentConversations) =>
+        currentConversations.filter(
+          (conversation) =>
+            conversation.id !== selectedConversationId,
+        ),
+      );
+
+      if (conversationId === selectedConversationId) {
+        setConversationId(null);
+        setMessages([]);
+      }
+    } catch (error) {
+      console.error("Erro ao excluir conversa:", error);
+      throw error;
+    }
   }
 
   useEffect(() => {
@@ -235,6 +267,7 @@ export function useChat() {
     sendMessage,
     selectConversation,
     newConversation,
+    deleteConversation,
   };
 }
 

@@ -27,6 +27,7 @@ export default function ChatPage() {
     sendMessage,
     selectConversation,
     newConversation,
+    deleteConversation,
   } = useChat();
 
   useEffect(() => {
@@ -65,6 +66,9 @@ export default function ChatPage() {
               selectConversation(user.uid, selectedConversationId)
             }
             onNewConversation={newConversation}
+            onDelete={(selectedConversationId) =>
+            deleteConversation(user.uid, selectedConversationId)
+            }
           />
         </div>
 
@@ -101,4 +105,5 @@ export default function ChatPage() {
       </div>
     </main>
   );
+  
 }

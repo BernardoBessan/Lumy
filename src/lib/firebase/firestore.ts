@@ -8,6 +8,7 @@ import {
   query,
   serverTimestamp,
   updateDoc,
+  writeBatch,
 } from "firebase/firestore";
 
 import { db } from "@/lib/firebase/firebase";
@@ -165,4 +166,32 @@ export async function updateConversationTitle(
       updatedAt: serverTimestamp(),
     },
   );
+}
+
+export async function deleteConversation(
+  uid: string,
+  conversationId: string,
+) {
+  const messagesRef = collection(
+    db,
+    "users",
+    uid,
+    "conversations",
+    conversationId,
+    "messages",
+  );
+
+  const messagesSnapshot = await getDocs(messagesRef);
+
+  const batch = writeBatch(db);
+
+  messagesSnapshot.docs.forEach((message) => {
+    batch.delete(message.ref);
+  });
+
+  batch.delete(
+    doc(db, "users", uid, "conversations", conversationId),
+  );
+
+  await batch.commit();
 }
